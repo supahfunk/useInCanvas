@@ -36,11 +36,31 @@ body {
   pointer-events: none !important;
 }
 
+.canvasPost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+.canvasPost canvas {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%!important;
+  height: 100vh!important;
+  background: black;
+  opacity: 0;
+}
+
 img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   vertical-align: middle;
+  opacity: 0;
 }
 
 .image {
@@ -50,7 +70,10 @@ img {
   width: calc(33.333% - 60px);
   aspect-ratio: 4/3;
   aspect-ratio: var(--aspectRatio);
-  opacity: 0;
+}
+
+.big-image {
+  width: 100%;
 }
 
 @media (max-width: 768px) {

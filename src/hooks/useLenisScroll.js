@@ -6,6 +6,7 @@ import useScrollStore from '../store/scroll'
 export default function useLenisScroll() {
   const isTouchDevice = useIsTouchDevice()
   const [lenis, setLenis] = useScrollStore((state) => [state.lenis, state.setLenis])
+  const store = useScrollStore((state) => state.store)
 
   useEffect(() => {
     if (isTouchDevice === undefined) return
@@ -35,7 +36,11 @@ export default function useLenisScroll() {
   }, [isTouchDevice])
 
   useFrame((time) => {
-    if (lenis) lenis.raf(time)
+    if (lenis) {
+      lenis.raf(time)
+      store.y = lenis.scroll
+      store.limit = lenis.limit
+    }
   }, [])
 
   return null

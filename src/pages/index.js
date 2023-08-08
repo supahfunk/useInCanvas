@@ -12,11 +12,14 @@ const data = [
 
 const Home = () => {
   return (
+    <>
+    <Image className="big-image" src='./supah.png' alt="" id={`supah`} aspect={'1960/754'} />
     <div className="grid">
       {[...data, ...data, ...data, ...data].map((img, i) => (
         <Image key={i.toString()} src={img.src} alt="" id={`image-${i}`} aspect={img.aspect} />
       ))}
     </div>
+    </>
   )
 }
 

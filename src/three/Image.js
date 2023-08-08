@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import useThreeStore from '../store/three'
 import useSize from '../hooks/useSize'
 
-const Image = ({ src, title, id, aspect }) => {
+const Image = ({ className, src, title, id, aspect }) => {
   const [node, setNode] = useState()
   const setImage = useThreeStore((store) => store.setImage)
 
@@ -22,7 +22,7 @@ const Image = ({ src, title, id, aspect }) => {
   }, [size])
 
   return (
-    <div ref={setNode} className="image" style={{ '--aspectRatio': aspect }}>
+    <div ref={setNode} className={`image ${className}`} style={{ '--aspectRatio': aspect }}>
       <img id={id} src={src} alt={title} />
     </div>
   )

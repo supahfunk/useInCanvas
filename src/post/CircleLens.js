@@ -4,58 +4,36 @@ import { Uniform, Vector2 } from 'three'
 import { Effect } from 'postprocessing'
 
 const fragmentShader = /* glsl */ `
-  uniform float fragments;
+  uniform float uFragments;
   uniform vec2 angle;
   uniform float scale;
+  uniform sampler2D uTexture;
+  uniform vec2 uMouse;
+  uniform vec2 uResolution;
 
-  const int samples = 35,
-          LOD = 2,         // gaussian done on MIPmap at scale LOD
-          sLOD = 1 << LOD; // tile size = 2^LOD
-  const float sigma = float(samples) * .25;
-
-  float gaussian(vec2 i) {
-    return exp( -.5* dot(i/=sigma,i) ) / ( 6.28 * sigma*sigma );
-  }
-
-  vec4 blur(sampler2D sp, vec2 U, vec2 scale) {
-    vec4 O = vec4(0);  
-    int s = samples/sLOD;
-    
-    for ( int i = 0; i < s*s; i++ ) {
-        vec2 d = vec2(i%s, i/s)*float(sLOD) - float(samples)/2.;
-        O += gaussian(d) * textureLod( sp, U + scale * d , float(LOD) );
-    }
-    
-    return O / O.a;
-  }
-
-  float pattern(vec2 uv) {
+  float pattern(vec2 uv, float mouse) {
+    float scale = 1. - mouse * .4;
+    vec2 angle = vec2(1.);
     vec2 point = scale * vec2(
       dot(angle.yx, vec2(uv.x, -uv.y)),
       dot(angle, uv)
     );
-
     return (sin(point.x) * sin(point.y)) * 4.0;
   }
-
+  
   void mainUv(inout vec2 uv) {
-    float circle = length(uv - 0.5);
-    uv *= 1. + 0.01 * mod(floor(circle * fragments), 2.);
   }
 
   void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
+    float mouse = texture2D(uTexture, uv).r;
+    float mouse1 = smoothstep(0.3, 0.7, mouse); 
 
+    vec2 vUv1 = uv * 1. - mouse1 * .1;
+    vec2 vUv2 = uv * 1. - mouse * .012;
+    vec4 T1 = texture2D(inputBuffer, vUv1);
+    vec4 T2 = texture2D(inputBuffer, vUv2);
 
-
-    vec3 color = vec3(
-        texture2D(inputBuffer, uv - .01).r,
-        texture2D(inputBuffer, uv).g,
-        texture2D(inputBuffer, uv + .01).b
-    );
-
-    outputColor = vec4(color, inputColor.a);
-    
-    // outputColor = vec4(inputColor.brga);
+    outputColor = mix(T1.rgba, T2.bgra, smoothstep(0.4, 0.6, mouse1));
   }
 `
 
@@ -66,14 +44,18 @@ const fragmentShader = /* glsl */ `
 export class CircleLensEffect extends Effect {
   constructor(fragments = 5.0) {
     super('CircleLensEffect', fragmentShader, {
-      uniforms: new Map([['fragments', new Uniform(Number)]])
+      uniforms: new Map([
+        ['uFragments', new Uniform(fragments)],
+        ['uMouse', new Uniform()],
+        ['uTexture', new Uniform()],
+        ['uResolution', new Uniform()],
+      ])
     })
 
     this.resolution = new Vector2()
-
     this.fragments = fragments
   }
-
+/* 
   getFragments() {
     return this.fragments
   }
@@ -82,15 +64,29 @@ export class CircleLensEffect extends Effect {
     fragments = Math.floor(fragments)
 
     const uniforms = this.uniforms
-    uniforms.get('fragments').value = fragments
+    uniforms.get('uFragments').value = fragments
 
     this.fragments = fragments
+  }
+
+  getTexture() {
+    return this.texture
+  }
+
+  setTexture(texture) {
+    texture = Math.floor(texture)
+
+    const uniforms = this.uniforms
+    uniforms.get('uTexture').value = texture
+
+    this.texture = texture
   }
 
   setSize(width, height) {
     this.resolution.set(width, height)
     this.setFragments(this.fragments)
-  }
+    this.setTexture(this.texture)
+  } */
 }
 
 export const CircleLens = forwardRef(({ fragments = 5 }, ref) => {
