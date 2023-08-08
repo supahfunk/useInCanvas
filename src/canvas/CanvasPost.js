@@ -18,7 +18,7 @@ class WaterTexture {
     this.scale = .1
     this.width = options.width * this.scale
     this.height = options.height * this.scale
-    this.radius = this.width * .02
+    this.radius = this.width * .015
     this.initTexture()
     this.trail = Array(10).fill().map(() => ({x: 0, y: 0}))
     this.mouseY = 0

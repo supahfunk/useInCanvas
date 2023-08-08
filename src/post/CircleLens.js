@@ -26,7 +26,7 @@ const fragmentShader = /* glsl */ `
 
   void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
     float mouse = texture2D(uTexture, uv).r;
-    float mouse1 = smoothstep(0.3, 0.7, mouse); 
+    float mouse1 = smoothstep(0.2, 0.5, mouse); 
 
     vec2 vUv1 = uv * 1. - mouse1 * .1;
     vec2 vUv2 = uv * 1. - mouse * .012;
