@@ -26,14 +26,15 @@ const fragmentShader = /* glsl */ `
 
   void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
     float mouse = texture2D(uTexture, uv).r;
-    float mouse1 = smoothstep(0.2, 0.5, mouse); 
+    float mouse1 = smoothstep(0.3, 1., mouse); 
 
-    vec2 vUv1 = uv * 1. - mouse1 * .1;
-    vec2 vUv2 = uv * 1. - mouse * .012;
+    vec2 vUv1 = uv * 1. + mouse1 * .2;
+    vec2 vUv2 = uv * 1. - mouse * .01;
     vec4 T1 = texture2D(inputBuffer, vUv1);
     vec4 T2 = texture2D(inputBuffer, vUv2);
 
     outputColor = mix(T1.rgba, T2.bgra, smoothstep(0.4, 0.6, mouse1));
+    
   }
 `
 
