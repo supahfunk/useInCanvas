@@ -23,14 +23,15 @@ class CustomEffect extends Effect {
         uv2 *= 1. - distortion;
         uv2 += .5;
 
-        // Alpha overwrite        
-        vec3 col = texture(inputBuffer, uv2).rgb;
-        float alpha = clamp(0., 1., (col.r+col.b+col.g)*100.) + r+g+b; // Riscrivo l'alpha basandomi sulla distosione delle texture
-
         // Chromatic aberration
         float r = texture(inputBuffer, uv2 + distortion * .04).r;
         float g = texture(inputBuffer, uv2).g;
         float b = texture(inputBuffer, uv2 - distortion * .04).b;
+        
+        // Alpha overwrite        
+        vec3 col = texture(inputBuffer, uv2).rgb;
+        float alpha = clamp(0., 1., (col.r+col.b+col.g)*100.) + r+g+b; // Riscrivo l'alpha basandomi sulla distosione delle texture
+
         col = vec3(r,g,b);
 
         outputColor = vec4(col, alpha);
