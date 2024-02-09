@@ -72,10 +72,6 @@ img {
   aspect-ratio: var(--aspectRatio);
 }
 
-.big-image {
-  width: 100%;
-}
-
 @media (max-width: 768px) {
   .image {
     width: calc(50% - 60px);

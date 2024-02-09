@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { EffectComposer } from '@react-three/postprocessing'
 import Home from './pages'
-import CanvasPost from './canvas/CanvasPost'
 import CanvasBridge from './three/CanvasBridge'
-import PostProcessing from './post/PostProcessing'
+import CustomPostProcessing from './three/CustomPostProcessing'
 import useLenisScroll from './hooks/useLenisScroll'
 import './styles.css'
 
@@ -20,11 +20,10 @@ export default function App() {
       <div className="canvas">
         <Canvas linear={true}>
           <CanvasBridge />
-          <PostProcessing canvas={$canvasPost} />
+          <EffectComposer disableNormalPass depthBuffer={true}>
+            <CustomPostProcessing />
+          </EffectComposer>
         </Canvas>
-      </div>
-      <div className="canvasPost">
-        <CanvasPost ref={$canvasPost} />
       </div>
     </div>
   )
