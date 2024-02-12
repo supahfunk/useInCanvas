@@ -4,19 +4,25 @@ import { Effect } from 'postprocessing'
 import { forwardRef, useMemo } from 'react'
 
 let _uOpacity
+let _uMouse
 
 class CustomEffect extends Effect {
-  constructor({ opacity = 1, scrollSpeed = 0 }) {
+  constructor({ opacity = 1, scrollSpeed = 0, mouse = null }) {
     super('HorizontalBlurEffect', /* glsl */`
       uniform float opacity;
       uniform float scrollSpeed;
+      uniform sampler2D mouse;
 
       void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
         vec2 uv2 = uv;
 
-        // Distortion
+        // Mouse Distortion
+        float mouseTexture = texture2D(mouse, uv2).r;
+        uv2 += mouseTexture * 0.01;
+
+        // Scroll Distortion
         float distortion = (smoothstep(.2, -1., uv.y) + smoothstep(0.8, 2., uv.y)); // Distanza 1.2 perché smoothstep B - smoothstep A = 1.2; => 2.-0.8=1.2 e -1.-.2=-1.2
-        distortion *= scrollSpeed * .05; // Moltiplico per scrollSpeed del mouse
+        distortion *= scrollSpeed * .03; // Moltiplico per scrollSpeed del mouse
 
         // UV distortion
         uv2 -= .5;
@@ -41,10 +47,12 @@ class CustomEffect extends Effect {
       uniforms: new Map([
         ['opacity', new Uniform(opacity)],
         ['scrollSpeed', new Uniform(scrollSpeed)],
+        ['mouse', new Uniform(mouse)],
       ]),
     })
 
     _uOpacity = opacity
+    _uMouse = mouse
   }
 
   /**
@@ -58,12 +66,13 @@ class CustomEffect extends Effect {
   update(/* renderer, inputBuffer, deltaTime */) {
     this.uniforms.get('opacity').value = _uOpacity
     this.uniforms.get('scrollSpeed').value = window.scrollSpeed
+    this.uniforms.get('mouse').value = _uMouse
   }
 }
 
-const CustomPostProcessing = forwardRef(({ opacity, scrollSpeed }, ref) => {
-  const effect = useMemo(() => new CustomEffect({ opacity, scrollSpeed }), [ opacity, scrollSpeed ])
+const CustomPostprocessing = forwardRef(({ opacity, scrollSpeed, mouse }, ref) => {
+  const effect = useMemo(() => new CustomEffect({ opacity, scrollSpeed, mouse }), [ opacity, scrollSpeed, mouse ])
   return <primitive ref={ref} object={effect} dispose={null} />
 })
 
-export default CustomPostProcessing
+export default CustomPostprocessing

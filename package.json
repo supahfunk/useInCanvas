@@ -12,16 +12,14 @@
     "@studio-freight/hamo": "0.6.28",
     "@studio-freight/lenis": "1.0.34",
     "immer": "10.0.3",
+    "leva": "^0.9.35",
     "loader-utils": "3.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-merge-refs": "^2.1.1",
     "react-scripts": "5.0.1",
     "three": "0.161.0",
     "zustand": "^4.5.0"
-  },
-  "devDependencies": {
-    "@babel/runtime": "7.23.9",
-    "typescript": "5.3.3"
   },
   "scripts": {
     "start": "react-scripts start",

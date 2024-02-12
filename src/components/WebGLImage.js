@@ -24,6 +24,7 @@ const WebGLImage = ({ className, src, title, id, aspect }) => {
   return (
     <div ref={setNode} className={`image ${className}`} style={{ '--aspectRatio': aspect }}>
       <img id={id} src={src} alt={title} />
+      <span style={{ display: 'inline-block', padding: '30px', fontFamily: 'arial', color: '#fff', fontSize: 40 }}>{id}</span>
     </div>
   )
 }
